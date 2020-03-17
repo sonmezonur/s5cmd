@@ -46,3 +46,7 @@ brews:
     homepage:  https://goreleaser.com
     test: |
       system "#{bin}/goreleaser -v"
+release:
+  github:
+    owner: sonmezonur
+    name: s5cmd
