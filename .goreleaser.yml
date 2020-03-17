@@ -1,16 +1,45 @@
-builds:
-- env:
-  - CGO_ENABLED=0
 
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod tidy
+    - go get -v
+builds:
+  -
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
 archives:
-- replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    amd64: x86_64
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}"
 changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+      - '^docs:'
+      - '^test:'
+      - Merge pull request
+      - Merge branch
+brews:
+  - github:
+      owner: goreleaser
+      name: homebrew-tap
+    folder: Formula
+    homepage:  https://goreleaser.com
+    test: |
+      system "#{bin}/goreleaser -v"
